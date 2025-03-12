@@ -1,6 +1,6 @@
 package routes
 
-import com.kev.service.models.Task
+import com.kev.service.models.TaskRequest
 import com.kev.service.service.TaskService
 import io.ktor.http.*
 import io.ktor.server.request.*
@@ -15,7 +15,7 @@ fun Route.taskRoutes() {
         }
 
         post("/add") {
-            val task = call.receive<Task>()
+            val task = call.receive<TaskRequest>()
             call.respond(TaskService.createTask(task))
         }
 

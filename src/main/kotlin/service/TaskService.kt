@@ -1,11 +1,13 @@
 package com.kev.service.service
 
 import com.kev.service.models.Task
+import com.kev.service.models.TaskRequest
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.util.*
 
 object TaskService {
 
@@ -20,14 +22,15 @@ object TaskService {
         }
     }
 
-    fun createTask(task: Task): Task = transaction {
-        val insertStatement = Tasks.insert {
-            it[id] = task.id
+    fun createTask(task: TaskRequest): Task = transaction {
+        val newId = UUID.randomUUID().toString()
+        Tasks.insert {
+            it[id] = newId
             it[title] = task.title
             it[description] = task.description
             it[completed] = task.completed
         }
-        task.copy(id = insertStatement[Tasks.id])
+        Task(newId, task.title, task.description, task.completed)
     }
 
     fun deleteTask(id: String) = transaction {
